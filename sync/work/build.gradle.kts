@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 plugins {
-    id("nowinandroid.android.library")
-    id("nowinandroid.android.library.jacoco")
-    id("nowinandroid.android.hilt")
+    alias(libs.plugins.nowinandroid.android.library)
+    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.nowinandroid.hilt)
 }
 
 android {
@@ -27,23 +27,20 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
-    implementation(project(":core:datastore"))
+    ksp(libs.hilt.ext.compiler)
 
-    implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.tracing.ktx)
-    implementation(libs.androidx.startup)
     implementation(libs.androidx.work.ktx)
     implementation(libs.hilt.ext.work)
+    implementation(projects.core.analytics)
+    implementation(projects.core.data)
+    implementation(projects.core.notifications)
 
-    testImplementation(project(":core:testing"))
-    androidTestImplementation(project(":core:testing"))
-
-    kapt(libs.hilt.ext.compiler)
+    prodImplementation(libs.firebase.cloud.messaging)
+    prodImplementation(platform(libs.firebase.bom))
 
     androidTestImplementation(libs.androidx.work.testing)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.kotlinx.coroutines.guava)
+    androidTestImplementation(projects.core.testing)
 }

@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// TODO: Remove once https://youtrack.jetbrains.com/issue/KTIJ-19369 is fixed
-@Suppress("DSL_SCOPE_VIOLATION")
+
 plugins {
-    id("kotlin")
+    alias(libs.plugins.nowinandroid.jvm.library)
 }
 
 dependencies {
-    implementation(libs.kotlinx.datetime)
+    api(libs.kotlinx.datetime)
 }

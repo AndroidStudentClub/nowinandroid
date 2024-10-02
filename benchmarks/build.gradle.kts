@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.android.build.api.dsl.ManagedVirtualDevice
-import com.google.samples.apps.nowinandroid.NiaBuildType
 import com.google.samples.apps.nowinandroid.configureFlavors
 
 plugins {
-    id("nowinandroid.android.test")
+    alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.nowinandroid.android.test)
 }
 
 android {
     namespace = "com.google.samples.apps.nowinandroid.benchmarks"
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 28
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "APP_BUILD_TYPE_SUFFIX", "\"\"")
@@ -33,23 +32,6 @@ android {
 
     buildFeatures {
         buildConfig = true
-    }
-
-    buildTypes {
-        // This benchmark buildType is used for benchmarking, and should function like your
-        // release build (for example, with minification on). It's signed with a debug key
-        // for easy local/CI testing.
-        val benchmark by creating {
-            // Keep the build type debuggable so we can attach a debugger if needed.
-            isDebuggable = true
-            signingConfig = signingConfigs.getByName("debug")
-            matchingFallbacks.add("release")
-            buildConfigField(
-                "String",
-                "APP_BUILD_TYPE_SUFFIX",
-                "\"${NiaBuildType.BENCHMARK.applicationIdSuffix ?: ""}\""
-            )
-        }
     }
 
     // Use the same flavor dimensions as the application to allow generating Baseline Profiles on prod,
@@ -63,34 +45,34 @@ android {
         )
     }
 
-    targetProjectPath = ":app"
-    experimentalProperties["android.experimental.self-instrumenting"] = true
-
-    testOptions {
-        managedDevices {
-            devices {
-                create<ManagedVirtualDevice>("pixel6Api31") {
-                    device = "Pixel 6"
-                    apiLevel = 31
-                    systemImageSource = "aosp"
-                }
-            }
+    testOptions.managedDevices.devices {
+        create<com.android.build.api.dsl.ManagedVirtualDevice>("pixel6Api33") {
+            device = "Pixel 6"
+            apiLevel = 33
+            systemImageSource = "aosp"
         }
     }
+
+    targetProjectPath = ":app"
+    experimentalProperties["android.experimental.self-instrumenting"] = true
+}
+
+baselineProfile {
+    // This specifies the managed devices to use that you run the tests on.
+    managedDevices.clear()
+    managedDevices += "pixel6Api33"
+
+    // Don't use a connected device but rely on a GMD for consistency between local and CI builds.
+    useConnectedDevices = false
+
 }
 
 dependencies {
+    implementation(libs.androidx.benchmark.macro)
     implementation(libs.androidx.test.core)
     implementation(libs.androidx.test.espresso.core)
     implementation(libs.androidx.test.ext)
-    implementation(libs.androidx.test.runner)
     implementation(libs.androidx.test.rules)
+    implementation(libs.androidx.test.runner)
     implementation(libs.androidx.test.uiautomator)
-    implementation(libs.androidx.benchmark.macro)
-}
-
-androidComponents {
-    beforeVariants {
-        it.enable = it.buildType == "benchmark"
-    }
 }

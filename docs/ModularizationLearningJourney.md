@@ -95,7 +95,7 @@ The Now in Android app contains the following types of modules:
 * The `app` module - contains app level and scaffolding classes that bind the rest of the codebase,
   such as `MainActivity`, `NiaApp` and app-level controlled navigation. A good example of this is
   the navigation setup through `NiaNavHost` and the bottom navigation bar setup
-  through `NiaTopLevelNavigation`. The `app` module depends on all `feature` modules and
+  through `TopLevelDestination`. The `app` module depends on all `feature` modules and
   required `core` modules.
 
 * `feature:` modules - feature specific modules which are scoped to handle a single responsibility
@@ -132,7 +132,7 @@ Using the above modularization strategy, the Now in Android app has the followin
    <td>Brings everything together required for the app to function correctly. This includes UI scaffolding and navigation. 
    </td>
    <td><code>NiaApp, MainActivity</code><br>
-   App-level controlled navigation via <code>NiaNavHost, NiaTopLevelNavigation</code>
+   App-level controlled navigation via <code>NiaNavHost, NiaAppState, TopLevelDestination</code>
    </td>
   </tr>
   <tr>
@@ -160,12 +160,20 @@ Using the above modularization strategy, the Now in Android app has the followin
    </td>
   </tr>
   <tr>
+   <td><code>core:designsystem</code>
+   </td>
+   <td>Design system which includes Core UI components (many of which are customized Material 3 components), app theme and icons. The design system can be viewed by running the <code>app-nia-catalog</code> run configuration. 
+   </td>
+   <td>
+   <code>NiaIcons</code>    <code>NiaButton</code>    <code>NiaTheme</code> 
+   </td>
+  </tr>
+  <tr>
    <td><code>core:ui</code>
    </td>
-   <td>UI components, composables and resources, such as icons, used by different features.
+   <td>Composite UI components and resources used by feature modules, such as the news feed. Unlike the <code>designsystem</code> module, it is dependent on the data layer since it renders models, like news resources. 
    </td>
-   <td><code>NiaIcons</code><br>
-   <code>NewsResourceCardExpanded</code>
+   <td> <code>NewsFeed</code> <code>NewsResourceCardExpanded</code>
    </td>
   </tr>
   <tr>

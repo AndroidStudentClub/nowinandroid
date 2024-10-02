@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 plugins {
-    id("nowinandroid.android.library")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
+    alias(libs.plugins.nowinandroid.android.library)
+    alias(libs.plugins.nowinandroid.android.library.compose)
+    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    lint {
-        checkDependencies = true
-    }
     namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
+    lintPublish(projects.lint)
+
     api(libs.androidx.compose.foundation)
     api(libs.androidx.compose.foundation.layout)
     api(libs.androidx.compose.material.iconsExtended)
     api(libs.androidx.compose.material3)
-    debugApi(libs.androidx.compose.ui.tooling)
-    api(libs.androidx.compose.ui.tooling.preview)
-    api(libs.androidx.compose.ui.util)
+    api(libs.androidx.compose.material3.adaptive)
+    api(libs.androidx.compose.material3.navigationSuite)
     api(libs.androidx.compose.runtime)
-    lintPublish(project(":lint"))
-    androidTestImplementation(project(":core:testing"))
+    api(libs.androidx.compose.ui.util)
+
+    implementation(libs.coil.kt.compose)
+
+    testImplementation(libs.androidx.compose.ui.test)
+    testImplementation(libs.androidx.compose.ui.testManifest)
+    
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.robolectric)
+    testImplementation(projects.core.screenshotTesting)
+
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
 }

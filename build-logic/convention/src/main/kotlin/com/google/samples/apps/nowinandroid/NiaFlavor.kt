@@ -4,7 +4,6 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.ProductFlavor
-import org.gradle.api.Project
 
 @Suppress("EnumEntryName")
 enum class FlavorDimension {
@@ -16,12 +15,12 @@ enum class FlavorDimension {
 // These two product flavors reflect this behaviour.
 @Suppress("EnumEntryName")
 enum class NiaFlavor(val dimension: FlavorDimension, val applicationIdSuffix: String? = null) {
-    demo(FlavorDimension.contentType),
-    prod(FlavorDimension.contentType, ".prod")
+    demo(FlavorDimension.contentType, applicationIdSuffix = ".demo"),
+    prod(FlavorDimension.contentType)
 }
 
-fun Project.configureFlavors(
-    commonExtension: CommonExtension<*, *, *, *>,
+fun configureFlavors(
+    commonExtension: CommonExtension<*, *, *, *, *, *>,
     flavorConfigurationBlock: ProductFlavor.(flavor: NiaFlavor) -> Unit = {}
 ) {
     commonExtension.apply {
@@ -33,7 +32,7 @@ fun Project.configureFlavors(
                     flavorConfigurationBlock(this, it)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
                         if (it.applicationIdSuffix != null) {
-                            this.applicationIdSuffix = it.applicationIdSuffix
+                            applicationIdSuffix = it.applicationIdSuffix
                         }
                     }
                 }

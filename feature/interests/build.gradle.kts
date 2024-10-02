@@ -13,11 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.library.jacoco")
+    alias(libs.plugins.nowinandroid.android.feature)
+    alias(libs.plugins.nowinandroid.android.library.compose)
+    alias(libs.plugins.nowinandroid.android.library.jacoco)
 }
 android {
     namespace = "com.google.samples.apps.nowinandroid.feature.interests"
+}
+
+dependencies {
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
+
+    testImplementation(projects.core.testing)
+    testImplementation(libs.robolectric)
+
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
+    androidTestImplementation(projects.core.testing)
 }
